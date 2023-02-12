@@ -16,5 +16,5 @@ class Product(Base):
 class Cart(Base):
     __tablename__ = "cart"
     id = Column(Integer, nullable=False, unique=True, autoincrement=True, primary_key=True)
-    product_id = Column(Integer, ForeignKey("product.id"))
+    product_id = Column(Integer, ForeignKey("product.id", ondelete="CASCADE"))
     amount = Column(Integer)

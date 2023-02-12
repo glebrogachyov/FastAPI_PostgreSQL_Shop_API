@@ -62,7 +62,7 @@ def list_cart(db=Depends(get_db)):
 
 
 @app.post("/new_product")
-def create_product(product: DetailedProduct, db=Depends(get_db)):
+def create_product(product: DetailedProductIn, db=Depends(get_db)):
     """ Создать новый товар """
     result = crud.create_product(db, product)
     print(result)

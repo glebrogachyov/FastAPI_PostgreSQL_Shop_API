@@ -1,6 +1,5 @@
 from sqlalchemy.orm import Session
 
-# import models
 import models
 import schemas
 
@@ -15,7 +14,7 @@ import schemas
 """
 
 
-def create_product(db: Session, product: schemas.DetailedProduct):
+def create_product(db: Session, product: schemas.DetailedProductIn):
     try:
         print(f"adding new product: {product}")
         db_product = models.Product(name=product.name, price=product.price, description=product.description)
@@ -24,7 +23,7 @@ def create_product(db: Session, product: schemas.DetailedProduct):
         db.commit()
     except Exception as e:
         return {"message": f"error. {e}"}
-    return {"message": f"added {db_product.name} {db_product.price}"}
+    return {"message": f"created product: {db_product.name} price: {db_product.price}"}
 
 
 def remove_product(db: Session, product_id: int):
@@ -34,7 +33,7 @@ def remove_product(db: Session, product_id: int):
             db.delete(db_product)
             db.commit()
         else:
-            return {"message": "no item with such id"}
+            return {"message": f"no item with id {product_id}"}
     except Exception as e:
         return {"message": "database error. " + repr(e)}
     return {"message": f"removed {db_product.name} {db_product.price}"}
@@ -59,7 +58,7 @@ def get_product_description(db: Session, product_id):
     try:
         db_product = db.query(models.Product).filter(models.Product.id == product_id).first()
         if not db_product:
-            return {"message": "no item with such id"}
+            return {"message": f"no item with id {product_id}"}
     except Exception as e:
         return {"message": "database error. " + repr(e)}
     return db_product
@@ -86,8 +85,8 @@ def add_to_cart(db: Session, product):
                 is_product_in_cart.amount = product.amount
         db.commit()
     except Exception as e:
-        return {"message": f"error adding product with id {product.id} to cart. {e}"}
-    return {"message": f"done. {product.id=} {product.amount=}"}
+        return {"message": f"error adding product with id {product.id} to cart. {repr(e)}"}
+    return {"message": f"done. {product.id=} amount set to {product.amount=}"}
 
 
 def list_cart(db: Session):

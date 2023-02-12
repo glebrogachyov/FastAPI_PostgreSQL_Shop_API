@@ -14,6 +14,15 @@ class DetailedProduct(BaseProduct):
         orm_mode = True
 
 
+class DetailedProductIn(BaseModel):
+    name: constr(strip_whitespace=True, to_lower=True, max_length=50)
+    price: confloat(ge=0)
+    description: constr(strip_whitespace=True) | None = None
+
+    class Config:
+        orm_mode = True
+
+
 class ProductToCart(BaseModel):
     id: conint(ge=0)
     amount: conint(ge=0)
