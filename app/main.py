@@ -6,8 +6,9 @@ from typing import Literal
 
 from test_data import test_items
 from schemas import *
-from database import SessionLocal
+from database import SessionLocal, engine
 import crud
+import models
 
 
 app = FastAPI()
@@ -103,4 +104,15 @@ def add_to_cart(response: Response, product_to_cart: ProductToCart, db=Depends(g
 
 
 if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-init", "--initialize")
+    args = parser.parse_args()
+
+    if args.initialize:
+        models.Base.metadata.create_all(bind=engine)
+        db = SessionLocal()
+        for item in test_items:
+            crud.create_product(db, DetailedProductIn(**item))
+        db.close()
     uvicorn.run(app, host="localhost", port=8000)
