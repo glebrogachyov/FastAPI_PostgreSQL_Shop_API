@@ -4,3 +4,4 @@ venv/
 .*
 __*
 !.env
+!requirements.txt
