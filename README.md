@@ -51,7 +51,7 @@ curl -X 'GET' \
 4. Получить детальное описание товара с id=10 (это будет Google Pixel 128GB, т.к. 8 записей было добавлено при инициализаци):
 ```sh
 curl -X 'GET' \
-  'http://localhost:8000/products/2' \
+  'http://localhost:8000/products/10' \
   -H 'accept: application/json'
 ```
 
