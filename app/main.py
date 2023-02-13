@@ -31,7 +31,7 @@ def root() -> RedirectResponse:
 def init_tables(response: Response,
                 create_empty: bool = Query(default=False, description="Создать без записей"),
                 db=Depends(get_db)):
-    """ Создание и наполнение таблиц тестовыми данными """
+    """ Создать и наполнить таблицы тестовыми данными """
     result = crud.init_tables()
     if not create_empty:
         for item in test_items:
@@ -42,6 +42,7 @@ def init_tables(response: Response,
 
 @app.delete("/drop_tables")
 def drop_tables(response: Response):
+    """ Удалить таблицы и данные """
     result = crud.drop_tables()
     response.status_code = result["status_code"]
     return result["response"]
