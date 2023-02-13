@@ -17,13 +17,14 @@ def filtrate(query, names=None, min_price=None, max_price=None, name_order_by=No
 
     if name_order_by == "asc":
         query = query.order_by(models.Product.name)
-    if name_order_by == "desc":
+    elif name_order_by == "desc":
         query = query.order_by(desc(models.Product.name))
 
     if price_order_by == "asc":
         query = query.order_by(models.Product.price)
-    if price_order_by == "desc":
+    elif price_order_by == "desc":
         query = query.order_by(desc(models.Product.price))
+
     return query
 
 
@@ -65,9 +66,7 @@ def list_products(db: Session, names=None, min_price=None, max_price=None, name_
 def get_product_description(db: Session, product_id):
     try:
         db_product = db.query(models.Product).filter(models.Product.id == product_id).first()
-        print(f"{db_product=}")
         if not db_product:
-            print("not db product")
             return {"status_code": 404, "response": {"message": f"no item with id {product_id}"}}
     except Exception as e:
         return {"status_code": 500, "response": {"message": "database error. debug: " + repr(e)}}
@@ -80,18 +79,17 @@ def add_to_cart(db: Session, product):
         if not is_product_exist:
             return {"status_code": 404, "response": {"message": f"product with id {product.id} doesn't exist"}}
 
-        is_product_in_cart = db.query(models.Cart).filter(models.Cart.product_id == product.id).first()
-        if not is_product_in_cart:
+        product_in_cart = db.query(models.Cart).filter(models.Cart.product_id == product.id).first()
+        if not product_in_cart:
             if product.amount == 0:
-                print(db, product.id)
                 return {"status_code": 404, "response": {"message": f"no product with id {product.id} in cart."}}
             cart_product = models.Cart(product_id=product.id, amount=product.amount)
             db.add(cart_product)
         else:
             if product.amount == 0:
-                db.delete(is_product_in_cart)
+                db.delete(product_in_cart)
             else:
-                is_product_in_cart.amount = product.amount
+                product_in_cart.amount = product.amount
         db.commit()
     except Exception as e:
         return {"status_code": 500,

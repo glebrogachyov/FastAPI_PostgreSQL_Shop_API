@@ -6,10 +6,9 @@ from typing import Literal
 
 from test_data import test_items
 from schemas import *
-from database import SessionLocal  # , engine
+from database import SessionLocal
 import crud
 
-# models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -32,6 +31,7 @@ def root() -> RedirectResponse:
 def init_tables(response: Response,
                 create_empty: bool = Query(default=False, description="Создать без записей"),
                 db=Depends(get_db)):
+    """ Создание и наполнение таблиц тестовыми данными """
     result = crud.init_tables()
     if not create_empty:
         for item in test_items:
@@ -58,7 +58,6 @@ def search_products(response: Response,
     """ Получить список названий товаров, с возможностью фильтрации (поиска) и сортировки по названию и (или) цене """
     result = crud.list_products(db, names, min_price, max_price, name_order_by, price_order_by)
     response.status_code = result["status_code"]
-    print(result)
     return result["response"]
 
 
@@ -66,7 +65,6 @@ def search_products(response: Response,
 def get_product_description(response: Response, product_id: int, db=Depends(get_db)):
     """ Получить детальное описание товара по его идентификатору """
     result = crud.get_product_description(db, product_id)
-    print(result)
     response.status_code = result["status_code"]
     return result["response"]
 
@@ -97,7 +95,7 @@ def remove_product(response: Response, product_id: int, db=Depends(get_db)):
 
 @app.patch("/cart")
 def add_to_cart(response: Response, product_to_cart: ProductToCart, db=Depends(get_db)):
-    """ Добавить товар в корзину, поменять количество товара в корзине. Количество = 0 уберёт товар из корзины. """
+    """ Добавить товар в корзину, поменять количество товара в корзине. Количество = 0 уберёт товар из корзины """
     result = crud.add_to_cart(db, product_to_cart)
     response.status_code = result["status_code"]
     return result["response"]

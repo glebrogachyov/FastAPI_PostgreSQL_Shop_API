@@ -13,9 +13,6 @@ class BaseProduct(BaseModel):
 class DetailedProductOut(BaseProduct):
     description: constr(strip_whitespace=True) | None = None
 
-    class Config:
-        orm_mode = True
-
 
 class DetailedProductIn(BaseModel):
     name: constr(strip_whitespace=True, to_lower=True, max_length=50)
@@ -42,9 +39,6 @@ class ProductInCart(BaseProduct):
     def compute_total_price(cls, values) -> dict:
         values["total_price"] = values["price"] * values["amount"]
         return values
-
-    class Config:
-        orm_mode = True
 
 
 class Cart(BaseModel):
