@@ -25,7 +25,7 @@ def get_db():
 @app.get("/", tags=["Redirect to OpenAPI docs"])
 def root() -> RedirectResponse:
     """ Перенаправление на страницу документации OpenAPI """
-    return RedirectResponse(url="http://localhost:8000/docs")
+    return RedirectResponse(url="http://localhost:8000/docs", status_code=307)
 
 
 @app.post("/init_tables", tags=["Tables"], name="Проинициализировать таблицы товаров и корзины")
